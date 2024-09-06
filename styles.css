@@ -1,0 +1,115 @@
+body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .menu-superior {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+			text-align: center;
+        }
+
+        .menu-superior ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-superior ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        .menu-superior a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            display: flex;
+            margin-top: 50px; /* Espaço para o menu superior */
+        }
+
+        .menu-lateral {
+            background-color: #f4f4f4;
+            padding: 15px;
+            width: 200px;
+            height: calc(100vh - 50px); /* Altura total menos a do menu superior */
+            position: fixed; /* Usar fixed para ficar sempre na tela */
+            top: 50px; /* Espaço para o menu superior */
+        }
+
+        .conteudo {
+            margin-left: 220px; /* Espaço para o menu lateral */
+            padding: 20px;
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .botao {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .coluna {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            font-size: 16px;
+            color: #333;
+        }
+
+        button[type="submit"] {
+            background-color: #28a745; /* Cor verde */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #218838; /* Cor verde escuro no hover */
+        }
