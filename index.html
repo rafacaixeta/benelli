@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="menu-superior">
+        <ul>
+            <li><a href="#" data-aba="registro-paciente">Registro de novo paciente</a></li>
+            <li><a href="#" data-aba="orcamentos">Orçamentos</a></li>
+            <li><a href="#" data-aba="termo-consentimento">Termo de Consentimento</a></li>
+            <li><a href="#" data-aba="receituarios">Receituários</a></li>
+            <li><a href="#" data-aba="mais">Mais</a></li>
+            <li><a href="#" data-aba="mais-mais">Mais Mais</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="menu-lateral">
+            <button class="botao" style="background-color: green;">Verde</button>
+            <button class="botao" style="background-color: blue;">Azul</button>
+            <button class="botao" style="background-color: black; color: white;">Preto</button>
+            <button class="botao" style="background-color: white; color: black;">Branco</button>
+            <button class="botao" style="background-color: purple; color: white;">Roxo</button>
+            <button class="botao" style="background-color: gray;">Cinza</button>
+        </div>
+
+        <div class="conteudo">
+            <div id="conteudo" style="display: block;">
+                <h1>Bem-vindo ao Sistema de Prontuário</h1>
+                <p>Aqui você pode gerenciar os pacientes e os documentos necessários.</p>
+            </div>
+
+            <div id="registro-paciente" style="display: none;">
+                <h2>Registro de Novo Paciente</h2>
+                <form id="formRegistro" action="processa_registro.php" method="POST">
+                    <h3>Dados Pessoais</h3>
+                    <label for="nome">Nome Completo:</label>
+                    <input type="text" id="nome" name="nome" required><br>
+
+                    <label for="data_nascimento">Data de Nascimento:</label>
+                    <input type="date" id="data_nascimento" name="data_nascimento" required><br>
+
+                    <label for="sexo">Sexo:</label>
+                    <select id="sexo" name="sexo" required>
+                        <option value="" disabled selected>Escolha uma opção</option>
+                        <option value="F">Feminino</option>
+                        <option value="M">Masculino</option>
+                    </select><br>
+
+                    <label for="rg">RG:</label>
+                    <input type="text" id="rg" name="rg" required><br>
+
+                    <label for="altura">Altura:</label>
+                    <input type="text" id="altura" name="altura" required><br>
+
+                    <label for="estado_civil">Estado Civil:</label>
+                    <input type="text" id="estado_civil" name="estado_civil" required><br>
+
+                    <label for="skin_color">Cor de Pele:</label>
+                    <input type="text" id="skin_color" name="skin_color" required><br>
+
+                    <label for="ufrom">Naturalidade:</label>
+                    <input type="text" id="ufrom" name="ufrom" required><br>
+
+                    <label for="escolaridade">Escolaridade:</label>
+                    <input type="text" id="escolaridade" name="escolaridade" required><br>
+
+                    <h3>Endereço e Contato</h3>
+                    <label for="cep">CEP:</label>
+                    <input type="text" id="cep" name="cep" required><br>
+
+                    <label for="endereço_residencial">Endereço:</label>
+                    <input type="text" id="endereço_residencial" name="endereço_residencial" required><br>
+
+                    <label for="telefone">Telefone:</label>
+                    <input type="tel" id="telefone" name="telefone" required><br>
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required><br>
+
+                    <h3>Dados Profissionais</h3>
+                    <label for="profissao">Profissão:</label>
+                    <input type="text" id="profissao" name="profissao" required><br>
+
+                    <h3>Anamnese</h3>
+                    <label for="saude">Questões de Saúde:</label>
+                    <textarea id="saude" name="saude" rows="4" required></textarea><br>
+
+                    <label for="alergias">Alergias:</label>
+                    <textarea id="alergias" name="alergias" rows="2" required></textarea><br>
+
+                    <label for="historico_dentario">Histórico Dentário:</label>
+                    <textarea id="historico_dentario" name="historico_dentario" rows="2" required></textarea><br>
+
+                    <label for="dentista">Atendido pelo(a) Dentista:</label>
+                    <select id="dentista" name="dentista" required>
+                        <option value="" disabled selected>Escolha uma opção</option>
+                        <option value="OBS">Dr. Otávio Benelli</option>
+                        <option value="TRD">Dra. Thabata Dias</option>
+                        <option value="SRD">Dra. Samantha Dias</option>
+                    </select><br>
+
+                    <button type="submit">Registrar Paciente</button>
+                </form>
+            </div>
+
+            <!-- Aba de Orçamentos -->
+            <div id="orcamentos" style="display: none;">
+                <h2>Orçamentos</h2>
+
+                <!-- Geração de novo orçamento -->
+                <h3>Gerar Novo Orçamento</h3>
+                <form id="formOrcamento" action="processa_orcamento.php" method="POST">
+                    <label for="paciente">Selecione um Paciente:</label>
+                    <select id="paciente" name="paciente" required onchange="carregarOrcamento(this.value)">
+                        <option value="" disabled selected>Escolha um paciente</option>
+                        <!-- No futuro, esse campo será preenchido com dados do banco de pacientes -->
+                        <option value="1">Paciente Exemplo 1</option>
+                        <option value="2">Paciente Exemplo 2</option>
+                    </select><br><br>
+
+                    <div id="orcamentoExistente" style="display: none;">
+                        <h4>Orçamento Anterior:</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Dente</th>
+                                    <th>Procedimento</th>
+                                    <th>Valor (R$)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orcamentoBody">
+                                <!-- Dados do orçamento serão preenchidos aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Adicionar Procedimento</h3>
+                    <label for="dente">Número do Dente:</label>
+                    <select id="dente" name="dente" required>
+                        <option value="" disabled selected>Escolha um dente</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="31">31</option>
+                        <option value="32">32</option>
+                        <option value="33">33</option>
+                        <option value="34">34</option>
+                        <option value="35">35</option>
+                        <option value="36">36</option>
+                        <option value="37">37</option>
+                        <option value="38">38</option>
+                        <option value="41">41</option>
+                        <option value="42">42</option>
+                        <option value="43">43</option>
+                        <option value="44">44</option>
+                        <option value="45">45</option>
+                        <option value="46">46</option>
+                        <option value="47">47</option>
+                        <option value="48">48</option>
+                    </select><br>
+
+                    <label for="procedimento">Procedimento:</label>
+                    <input type="text" id="procedimento" name="procedimento" required><br>
+
+                    <label for="valor">Valor (R$):</label>
+                    <input type="number" id="valor" name="valor" step="0.01" required><br>
+
+                    <button type="button" id="adicionarProcedimento" onclick="adicionarProcedimento()">Adicionar Procedimento</button><br><br>
+
+                    <button type="submit">Finalizar Orçamento</button>
+                </form>
+            </div>
+
+            <div id="termo-consentimento" style="display: none;">
+                <h2>Termo de Consentimento</h2>
+                <p>Conteúdo do Termo de Consentimento.</p>
+            </div>
+
+            <div id="receituarios" style="display: none;">
+                <h2>Receituários</h2>
+                <p>Conteúdo dos Receituários.</p>
+            </div>
+
+            <div id="mais" style="display: none;">
+                <h2>Mais</h2>
+                <p>Conteúdo da seção Mais.</p>
+            </div>
+
+            <div id="mais-mais" style="display: none;">
+                <h2>Mais Mais</h2>
+                <p>Conteúdo da seção Mais Mais.</p>
+            </div>
+        </div>
+    </div>
+
+	<style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .menu-superior {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+			text-align: center;
+        }
+
+        .menu-superior ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-superior ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        .menu-superior a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            display: flex;
+            margin-top: 50px; /* Espaço para o menu superior */
+        }
+
+        .menu-lateral {
+            background-color: #f4f4f4;
+            padding: 15px;
+            width: 200px;
+            height: calc(100vh - 50px); /* Altura total menos a do menu superior */
+            position: fixed; /* Usar fixed para ficar sempre na tela */
+            top: 50px; /* Espaço para o menu superior */
+        }
+
+        .conteudo {
+            margin-left: 220px; /* Espaço para o menu lateral */
+            padding: 20px;
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .botao {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input, textarea {
+            width: 40%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+		
+		select {
+			width: 42%;
+			padding: 8px;
+			margin-bottom: 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			background-color: #fff;
+			font-size: 16px;
+			color: #333;
+		}
+
+		select:focus {
+			outline: none;
+			border-color: #333;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+		}
+
+		button[type="submit"] {
+			background-color: #28a745; /* Cor verde */
+			color: white; /* Texto em branco */
+			padding: 12px 20px; /* Espaçamento interno */
+			border: none; /* Sem borda externa */
+			border-radius: 5px; /* Bordas arredondadas */
+			cursor: pointer; /* Cursor de clique */
+			font-size: 16px; /* Tamanho do texto */
+			transition: background-color 0.3s ease; /* Transição suave para hover */
+			width: 100%;
+			max-width: 300px; /* Limite máximo de largura */
+			text-align: center;
+		}
+
+		button[type="submit"]:hover {
+			background-color: #218838; /* Cor ao passar o mouse (um verde mais escuro) */
+		}
+
+		button[type="submit"]:focus {
+			outline: none; /* Remover o outline padrão */
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Sombra para foco */
+		}
+
+    </style>
+
+    <script>
+        // Script para mostrar e esconder abas
+        const links = document.querySelectorAll('.menu-superior ul li a');
+        links.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const aba = this.dataset.aba;
+
+                document.querySelectorAll('.conteudo > div').forEach(div => {
+                    div.style.display = 'none';
+                });
+                document.getElementById(aba).style.display = 'block';
+            });
+        });
+
+        // Adiciona procedimentos ao orçamento
+        const procedimentos = [];
+        function adicionarProcedimento() {
+            const dente = document.getElementById('dente').value;
+            const procedimento = document.getElementById('procedimento').value;
+            const valor = parseFloat(document.getElementById('valor').value).toFixed(2);
+
+            if (dente && procedimento && valor) {
+                procedimentos.push({ dente, procedimento, valor });
+
+                const tbody = document.getElementById('orcamentoBody');
+                const tr = document.createElement('tr');
+                tr.innerHTML = <td>${dente}</td><td>${procedimento}</td><td>R$ ${valor}</td>;
+                tbody.appendChild(tr);
+            }
+        }
+
+        // Carrega orçamento existente
+        function carregarOrcamento(pacienteId) {
+            // Simulando carregamento de dados do banco de dados
+            const orcamento = [
+                { dente: '11', procedimento: 'Restauração', valor: 150 },
+                { dente: '12', procedimento: 'Limpeza', valor: 80 },
+            ];
+
+            if (pacienteId) {
+                document.getElementById('orcamentoExistente').style.display = 'block';
+                const tbody = document.getElementById('orcamentoBody');
+                tbody.innerHTML = ''; // Limpa o conteúdo anterior
+
+                orcamento.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = <td>${item.dente}</td><td>${item.procedimento}</td><td>R$ ${item.valor.toFixed(2)}</td>;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                document.getElementById('orcamentoExistente').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
