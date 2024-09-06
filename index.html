@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -210,8 +211,7 @@
             </div>
         </div>
     </div>
-
-	<style>
+    <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -276,8 +276,17 @@
             cursor: pointer;
         }
 
-        form {
-            margin-top: 20px;
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .coluna {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
         label {
@@ -286,109 +295,56 @@
         }
 
         input, textarea {
-            width: 40%;
+            width: 100%;
             padding: 8px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-		
-		select {
-			width: 42%;
-			padding: 8px;
-			margin-bottom: 10px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			background-color: #fff;
-			font-size: 16px;
-			color: #333;
-		}
 
-		select:focus {
-			outline: none;
-			border-color: #333;
-			box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-		}
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            font-size: 16px;
+            color: #333;
+        }
 
-		button[type="submit"] {
-			background-color: #28a745; /* Cor verde */
-			color: white; /* Texto em branco */
-			padding: 12px 20px; /* Espaçamento interno */
-			border: none; /* Sem borda externa */
-			border-radius: 5px; /* Bordas arredondadas */
-			cursor: pointer; /* Cursor de clique */
-			font-size: 16px; /* Tamanho do texto */
-			transition: background-color 0.3s ease; /* Transição suave para hover */
-			width: 100%;
-			max-width: 300px; /* Limite máximo de largura */
-			text-align: center;
-		}
+        button[type="submit"] {
+            background-color: #28a745; /* Cor verde */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
 
-		button[type="submit"]:hover {
-			background-color: #218838; /* Cor ao passar o mouse (um verde mais escuro) */
-		}
-
-		button[type="submit"]:focus {
-			outline: none; /* Remover o outline padrão */
-			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Sombra para foco */
-		}
-
+        button[type="submit"]:hover {
+            background-color: #218838; /* Cor verde escuro no hover */
+        }
     </style>
 
-    <script>
-        // Script para mostrar e esconder abas
+<script>
+        // Função para trocar entre abas
         const links = document.querySelectorAll('.menu-superior ul li a');
         links.forEach(link => {
             link.addEventListener('click', function (e) {
                 e.preventDefault();
                 const aba = this.dataset.aba;
-
+                
                 document.querySelectorAll('.conteudo > div').forEach(div => {
                     div.style.display = 'none';
                 });
+
                 document.getElementById(aba).style.display = 'block';
             });
         });
-
-        // Adiciona procedimentos ao orçamento
-        const procedimentos = [];
-        function adicionarProcedimento() {
-            const dente = document.getElementById('dente').value;
-            const procedimento = document.getElementById('procedimento').value;
-            const valor = parseFloat(document.getElementById('valor').value).toFixed(2);
-
-            if (dente && procedimento && valor) {
-                procedimentos.push({ dente, procedimento, valor });
-
-                const tbody = document.getElementById('orcamentoBody');
-                const tr = document.createElement('tr');
-                tr.innerHTML = <td>${dente}</td><td>${procedimento}</td><td>R$ ${valor}</td>;
-                tbody.appendChild(tr);
-            }
-        }
-
-        // Carrega orçamento existente
-        function carregarOrcamento(pacienteId) {
-            // Simulando carregamento de dados do banco de dados
-            const orcamento = [
-                { dente: '11', procedimento: 'Restauração', valor: 150 },
-                { dente: '12', procedimento: 'Limpeza', valor: 80 },
-            ];
-
-            if (pacienteId) {
-                document.getElementById('orcamentoExistente').style.display = 'block';
-                const tbody = document.getElementById('orcamentoBody');
-                tbody.innerHTML = ''; // Limpa o conteúdo anterior
-
-                orcamento.forEach(item => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = <td>${item.dente}</td><td>${item.procedimento}</td><td>R$ ${item.valor.toFixed(2)}</td>;
-                    tbody.appendChild(tr);
-                });
-            } else {
-                document.getElementById('orcamentoExistente').style.display = 'none';
-            }
-        }
     </script>
 </body>
 </html>
+
