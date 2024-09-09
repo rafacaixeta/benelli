@@ -1,6 +1,6 @@
 <?php
 // Conexão com o banco de dados (preencha com suas credenciais)
-$conn = new PDO('mysql:host=localhost;dbname=agenda', 'usuario', 'senha');
+$conn = new PDO('mysql:host=localhost;dbname=seu_banco', 'root', '');
 
 // Obtém as datas de início e fim enviadas via GET
 $inicio = $_GET['inicio'];
