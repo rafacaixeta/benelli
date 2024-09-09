@@ -191,6 +191,66 @@
                     <button type="submit">Finalizar Orçamento</button>
                 </form>
             </div>
+
+            <!-- Aba TERMO de CONSENTIMENTO -->
+            <div id="termo-consentimento" style="display: none;">
+                <h2>Termo de Consentimento</h2>
+            
+                <form action="processa_termo.php" method="POST" enctype="multipart/form-data">
+                    <label for="documento">Selecione o Documento:</label>
+                    <select id="documento" name="documento" required onchange="mostrarDocumento(this.value)">
+                        <option value="" disabled selected>Escolha um documento</option>
+                        <option value="Termo de Consentimento Livre e Esclarecido.docx">Termo de Consentimento Livre e Esclarecido</option>
+                        <option value="termo de Consentimento Fotografico.docx">Termo de Consentimento Fotográfico</option>
+                        <!-- Adicione mais termos conforme necessário -->
+                    </select>
+            
+                    <div id="visualizacaoDocumento" style="margin-top: 20px;">
+                        <!-- O documento convertido será exibido aqui -->
+                    </div>
+            
+                    <div style="margin-top: 20px;">
+                        <button type="button" onclick="imprimirDocumento()">Imprimir</button>
+                        <button type="button" onclick="enviarEmail()">Enviar por E-mail</button>
+                        <button type="button" onclick="assinarDocumento()">Assinar Documento</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="receituarios" style="display: none;">
+                <h2>Gerar Receituário</h2>
+            
+                <form id="formReceituario" action="processa_receituario.php" method="POST">
+                    <label for="paciente">Nome do Paciente:</label>
+                    <input type="text" id="paciente" name="paciente" placeholder="Digite o nome do paciente" required>
+                    <div id="sugestoesPaciente" class="autocomplete-suggestions"></div>
+                    <br>
+            
+                    <label for="endereco">Endereço:</label>
+                    <input type="text" id="endereco" name="endereco" readonly><br><br>
+            
+                    <label for="medicamento">Medicamento:</label>
+                    <input type="text" id="medicamento" name="medicamento" placeholder="Digite o nome do medicamento" required>
+                    <div id="sugestoesMedicamento" class="autocomplete-suggestions"></div>
+                    <br>
+            
+                    <label for="dosagem">Dosagem e Instruções:</label>
+                    <textarea id="dosagem" name="dosagem" rows="2" placeholder="Insira a dosagem e instruções"></textarea><br>
+            
+                    <button type="button" id="adicionarMedicamento">Adicionar Medicamento</button><br><br>
+            
+                    <div id="receitaGerada">
+                        <!-- A receita será gerada aqui -->
+                        <h3>Receita:</h3>
+                        <div id="listaMedicamentos"></div>
+                    </div>
+            
+                    <button type="submit">Gerar Receituário para Impressão</button>
+                </form>
+            </div>
+            
+                        
+
             <!-- Botão verde -->
             <div id="agenda-consultas" style="display: none;">
                 <h2>Agenda de Consultas</h2>
@@ -265,6 +325,8 @@
                 document.getElementById(aba).style.display = 'block';
             });
         });
+
+
 
 
     // Função para gerar a tabela de horários
@@ -378,6 +440,133 @@ async function carregarConsultas(inicioSemana, fimSemana) {
         if (input) input.disabled = true;
     });
 }
+
+                //TERMO CONSENTIMENTO
+
+// Função para exibir o documento selecionado TERMO CONSENTIMENTO
+function mostrarDocumento(documento) {
+    if (documento) {
+        const caminhoDocumento = 'termos/' + documento;
+        document.getElementById('visualizacaoDocumento').innerHTML =
+            '<a href="' + caminhoDocumento + '" download>Clique para baixar o ' + documento + '</a>';
+    }
+}
+
+// Função para imprimir o documento
+function imprimirDocumento() {
+    const documento = document.getElementById('documento').value;
+    if (documento) {
+        const iframe = document.querySelector('#visualizacaoDocumento iframe');
+        iframe.contentWindow.print();
+    } else {
+        alert('Selecione um documento primeiro.');
+    }
+}
+
+// Função para enviar o documento por e-mail (vai usar AJAX para enviar a solicitação ao servidor)
+function enviarEmail() {
+    const documento = document.getElementById('documento').value;
+    if (documento) {
+        // Lógica de envio do documento por e-mail
+        alert('O documento ' + documento + ' foi enviado por e-mail.');
+    } else {
+        alert('Selecione um documento primeiro.');
+    }
+}
+
+// Função para assinatura do paciente
+function assinarDocumento() {
+    const documento = document.getElementById('documento').value;
+    if (documento) {
+        // Lógica de assinatura eletrônica (pode ser realizada com assinatura digital ou caixa de diálogo)
+        alert('O documento ' + documento + ' foi assinado com sucesso.');
+    } else {
+        alert('Selecione um documento primeiro.');
+    }
+}
+
+
+//JAVA DE AUTOCOMPLEMENTAR BUSCA NO RECEITUÁRIO
+document.addEventListener('DOMContentLoaded', function () {
+    // Simulação de pacientes e medicamentos (substituir com dados do banco de dados no futuro)
+    const pacientes = [
+        { nome: "João Silva", endereco: "Rua A, 123" },
+        { nome: "Maria Oliveira", endereco: "Avenida B, 456" },
+        { nome: "Carlos Santos", endereco: "Praça C, 789" }
+    ];
+
+    const medicamentos = ["Paracetamol", "Ibuprofeno", "Amoxicilina", "Diclofenaco", "Azitromicina"];
+
+    // Autocomplete de pacientes
+    const pacienteInput = document.getElementById('paciente');
+    const sugestoesPaciente = document.getElementById('sugestoesPaciente');
+    const enderecoInput = document.getElementById('endereco');
+
+    pacienteInput.addEventListener('input', function () {
+        const valor = this.value.toLowerCase();
+        sugestoesPaciente.innerHTML = '';
+        if (valor) {
+            const resultados = pacientes.filter(paciente => paciente.nome.toLowerCase().includes(valor));
+            resultados.forEach(paciente => {
+                const div = document.createElement('div');
+                div.innerHTML = paciente.nome;
+                div.addEventListener('click', function () {
+                    pacienteInput.value = paciente.nome;
+                    enderecoInput.value = paciente.endereco;
+                    sugestoesPaciente.innerHTML = '';
+                });
+                sugestoesPaciente.appendChild(div);
+            });
+        }
+    });
+
+    // Autocomplete de medicamentos
+    const medicamentoInput = document.getElementById('medicamento');
+    const sugestoesMedicamento = document.getElementById('sugestoesMedicamento');
+
+    medicamentoInput.addEventListener('input', function () {
+        const valor = this.value.toLowerCase();
+        sugestoesMedicamento.innerHTML = '';
+        if (valor) {
+            const resultados = medicamentos.filter(medicamento => medicamento.toLowerCase().includes(valor));
+            resultados.forEach(medicamento => {
+                const div = document.createElement('div');
+                div.innerHTML = medicamento;
+                div.addEventListener('click', function () {
+                    medicamentoInput.value = medicamento;
+                    sugestoesMedicamento.innerHTML = '';
+                });
+                sugestoesMedicamento.appendChild(div);
+            });
+        }
+    });
+
+    // Adicionar medicamentos à lista de receita
+    const adicionarMedicamentoBtn = document.getElementById('adicionarMedicamento');
+    const listaMedicamentos = document.getElementById('listaMedicamentos');
+
+    adicionarMedicamentoBtn.addEventListener('click', function () {
+        const medicamento = medicamentoInput.value;
+        const dosagem = document.getElementById('dosagem').value;
+
+        if (medicamento && dosagem) {
+            const div = document.createElement('div');
+            div.innerHTML = `<strong>Medicamento:</strong> ${medicamento} - <strong>Dosagem:</strong> ${dosagem}`;
+            listaMedicamentos.appendChild(div);
+
+            // Limpar os campos após adicionar
+            medicamentoInput.value = '';
+            document.getElementById('dosagem').value = '';
+        } else {
+            alert('Por favor, preencha o medicamento e a dosagem.');
+        }
+    });
+});
+
+
+
+
+
 
     </script>
 
