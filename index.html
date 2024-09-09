@@ -21,13 +21,15 @@
 
     <div class="container">
         <div class="menu-lateral">
-            <button class="botao" style="background-color: green;">Verde</button>
+            <button class="botao" style="background-color: green;">Agenda</button>
             <button class="botao" style="background-color: blue;">Azul</button>
             <button class="botao" style="background-color: black; color: white;">Preto</button>
             <button class="botao" style="background-color: white; color: black;">Branco</button>
             <button class="botao" style="background-color: purple; color: white;">Roxo</button>
             <button class="botao" style="background-color: gray;">Cinza</button>
         </div>
+
+      
 
         <div class="conteudo">
             <div id="conteudo" style="display: block;">
@@ -189,7 +191,43 @@
                     <button type="submit">Finalizar Orçamento</button>
                 </form>
             </div>
+            <!-- Botão verde -->
+            <div id="agenda-consultas" style="display: none;">
+                <h2>Agenda de Consultas</h2>
 
+                <form id="formAgenda" action="processa_agenda.php" method="POST">
+                    <!-- Seleção do paciente -->
+                    <label for="paciente-agenda">Paciente:</label>
+                    <select id="paciente-agenda" name="paciente" required>
+                        <option value="" disabled selected>Escolha um paciente</option>
+                        <option value="1">Paciente Exemplo 1</option>
+                        <option value="2">Paciente Exemplo 2</option>
+                        <!-- Aqui serão inseridos os pacientes do banco de dados -->
+                    </select><br>
+
+                    <!-- Seleção do dentista -->
+                    <label for="dentista-agenda">Dentista:</label>
+                    <select id="dentista-agenda" name="dentista" required>
+                        <option value="" disabled selected>Escolha um dentista</option>
+                        <option value="OBS">Dr. Otávio Benelli</option>
+                        <option value="TRD">Dra. Thabata Dias</option>
+                        <option value="SRD">Dra. Samantha Dias</option>
+                    </select><br>
+
+                    <div id="agenda-header">
+                        <button id="anterior" onclick="mudarSemana(-1)">Semana Anterior</button>
+                        <span id="semana-atual"></span>
+                        <button id="proximo" onclick="mudarSemana(1)">Próxima Semana</button>
+                    </div>
+    
+                    <!-- Visualização semanal da agenda -->
+                    <div id="tabela-agenda">
+                        <!-- A tabela será preenchida dinamicamente com os horários disponíveis -->
+                    </div>
+
+                    <button type="submit">Confirmar Consulta</button>
+                </form>
+            </div>
             <div id="termo-consentimento" style="display: none;">
                 <h2>Termo de Consentimento</h2>
                 <p>Conteúdo do Termo de Consentimento.</p>
@@ -227,7 +265,121 @@
                 document.getElementById(aba).style.display = 'block';
             });
         });
+
+
+    // Função para gerar a tabela de horários
+    function gerarTabelaAgenda() {
+        const diasDaSemana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+        const horarios = [];
+
+        // Gera horários de 8h até 18h com intervalos de 1 hora
+        for (let i = 8; i <= 18; i++) {
+            horarios.push(i + ':00');
+        }
+
+        const tabela = document.createElement('table');
+        tabela.setAttribute('border', '1');
+        tabela.innerHTML = '<tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th></tr>';
+
+        horarios.forEach(horario => {
+            const linha = document.createElement('tr');
+            const celulaHorario = document.createElement('td');
+            celulaHorario.innerText = horario;
+            linha.appendChild(celulaHorario);
+
+            diasDaSemana.forEach(dia => {
+                const celula = document.createElement('td');
+                celula.innerHTML = `<input type="radio" name="consulta-horario" value="${dia}-${horario}">`;
+                linha.appendChild(celula);
+            });
+
+            tabela.appendChild(linha);
+        });
+
+        // Insere a tabela no div da agenda
+        document.getElementById('tabela-agenda').innerHTML = '';
+        document.getElementById('tabela-agenda').appendChild(tabela);
+    }
+
+    // Evento para exibir a agenda ao clicar no botão verde
+    document.querySelector('.botao[style="background-color: green;"]').addEventListener('click', function() {
+        // Esconde outras seções e mostra a agenda
+        document.querySelectorAll('.conteudo > div').forEach(div => {
+            div.style.display = 'none';
+        });
+        document.getElementById('agenda-consultas').style.display = 'block';
+
+        // Gera a tabela de horários quando a agenda for exibida
+        gerarTabelaAgenda();
+    });
+
+    let semanaAtual = new Date(); // A semana começa no dia atual
+
+    // Função para mudar a semana (com valor -1 para voltar e 1 para avançar)
+    function mudarSemana(valor) {
+        semanaAtual.setDate(semanaAtual.getDate() + valor * 7);
+        atualizarSemana();
+    }
+
+    // Função para formatar a data e atualizar o cabeçalho da semana
+    function atualizarSemana() {
+        const inicioSemana = new Date(semanaAtual);
+        const fimSemana = new Date(semanaAtual);
+        inicioSemana.setDate(inicioSemana.getDate() - inicioSemana.getDay() + 1); // Segunda-feira
+        fimSemana.setDate(inicioSemana.getDate() + 6); // Domingo
+        
+        const opcoes = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        document.getElementById('semana-atual').innerText = `Semana de ${inicioSemana.toLocaleDateString('pt-BR', opcoes)} até ${fimSemana.toLocaleDateString('pt-BR', opcoes)}`;
+        
+        // Aqui você pode carregar as consultas da semana em questão
+        carregarConsultas(inicioSemana, fimSemana);
+    }
+
+    // Chamada para atualizar a semana assim que a página carregar
+    window.onload = atualizarSemana;
+
+    // Função para carregar consultas de uma semana específica
+    function carregarConsultas(inicioSemana, fimSemana) {
+        // Aqui você faria uma requisição ao servidor (usando fetch ou AJAX) para buscar as consultas no intervalo de datas
+        // Exemplo fictício:
+        const consultas = [
+            { paciente: 'Paciente Exemplo 1', dentista: 'Dr. Otávio', horario: 'Segunda-09:00' },
+            { paciente: 'Paciente Exemplo 2', dentista: 'Dra. Samantha', horario: 'Terça-10:00' }
+        ];
+
+        // Limpa os horários
+        document.querySelectorAll('#tabela-agenda input[type="radio"]').forEach(radio => {
+            radio.disabled = false;
+            radio.checked = false;
+        });
+
+        // Marca os horários já ocupados
+        consultas.forEach(consulta => {
+            const [dia, hora] = consulta.horario.split('-');
+            document.querySelector(`input[value="${dia}-${hora}"]`).disabled = true;
+        });
+    }
+
+    // Função para carregar consultas via API
+async function carregarConsultas(inicioSemana, fimSemana) {
+    const resposta = await fetch(`consultas.php?inicio=${inicioSemana.toISOString()}&fim=${fimSemana.toISOString()}`);
+    const consultas = await resposta.json();
+
+    // Limpa os horários
+    document.querySelectorAll('#tabela-agenda input[type="radio"]').forEach(radio => {
+        radio.disabled = false;
+        radio.checked = false;
+    });
+
+    // Marca os horários já ocupados
+    consultas.forEach(consulta => {
+        const [dia, hora] = consulta.horario.split('-');
+        const input = document.querySelector(`input[value="${dia}-${hora}"]`);
+        if (input) input.disabled = true;
+    });
+}
+
     </script>
+
 </body>
 </html>
-
