@@ -58,3 +58,4 @@ if ($dataConsulta) {
     echo "Erro ao marcar a consulta. Dia inválido.";
 }
 ?>
+
